@@ -164,10 +164,14 @@ def update_game():
 
         for brick in game_state.bricks[:]:
             if brick.collidepoint(game_state.ball.x, game_state.ball.y):
-                game_state.bricks.remove(brick)
-                ### 점수 추가 부분 ###
-                game_state.score += 100
-                ###
+                if brick.health > 1 :
+                    brick.health -= 1
+                    brick.color = (255, 128, 128)
+                else :
+                    game_state.bricks.remove(brick)
+                    ### 점수 추가 부분 ###
+                    game_state.score += 100
+                    ###
                 if not game_state.ball.piercing:
                     game_state.ball.speed_y = -game_state.ball.speed_y
                 if random.random() < game_state.item_drop_chance:
@@ -240,8 +244,10 @@ def render_game():
     elif game_state.game_active and not game_state.game_over and not game_state.round_clear and not game_state.paused:
         pygame.draw.rect(screen, game_state.paddle.color, (game_state.paddle.x, game_state.paddle.y, game_state.paddle.width, game_state.paddle.height))
         pygame.draw.circle(screen, RED, (game_state.ball.x, game_state.ball.y), game_state.ball.radius)
+        ### 벽돌의 종류에 따른 색상 변경 부분 ###
         for brick in game_state.bricks:
-            pygame.draw.rect(screen, WHITE, brick)
+            pygame.draw.rect(screen, brick.color, brick)
+        ###
         for item in game_state.items:
             screen.blit(item_images[item['type']], item['rect'])
         time_text = tiny_font.render(f"Time: {seconds}", True, WHITE)
