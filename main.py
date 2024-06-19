@@ -9,7 +9,7 @@ from ball import Ball
 from game_state import GameState
 
 from setting import screen_width, screen_height, screen, WHITE, BLACK, RED, BLUE, PURPLE, font, small_font, tiny_font, heart_image, item_images
-from button import reset_button_rect, resume_button_rect, reset_button_text, resume_button_text_rect, next_round_button_rect, start_menu_button_rect, next_round_button_text, start_menu_button_text, next_round_button_text_rect, start_menu_button_text_rect, game_over_button_rect, game_over_button_text, game_over_button_text_rect, button_color, button_rect, button_text, button_text_rect, stage_1_button_rect, stage_2_button_rect, stage_3_button_rect, stage_4_button_rect, stage_1_button_text, stage_2_button_text, stage_3_button_text, stage_4_button_text, stage_1_button_text_rect, stage_2_button_text_rect, stage_3_button_text_rect, stage_4_button_text_rect
+from button import reset_button_rect, resume_button_rect, reset_button_text,reset_button_text_rect ,resume_button_text, resume_button_text_rect, next_round_button_rect, start_menu_button_rect, next_round_button_text, start_menu_button_text, next_round_button_text_rect, start_menu_button_text_rect, game_over_button_rect, game_over_button_text, game_over_button_text_rect, button_color, button_rect, button_text, button_text_rect, stage_1_button_rect, stage_2_button_rect, stage_3_button_rect, stage_4_button_rect, stage_1_button_text, stage_2_button_text, stage_3_button_text, stage_4_button_text, stage_1_button_text_rect, stage_2_button_text_rect, stage_3_button_text_rect, stage_4_button_text_rect
 
 # 게임 상태 클래스
 game_state = GameState()
@@ -35,7 +35,7 @@ def handle_events():
                 if event.key == pygame.K_SPACE:
                     game_state.ball.speed_y = 5
                     game_state.ball.speed_x = 0
-###추가부분###
+            ###추가부분###
             if event.key == pygame.K_s and game_state.game_active :
                 if game_state.paddle.speed > 2 :
                     game_state.paddle.speed /= 2
@@ -43,7 +43,7 @@ def handle_events():
                 if game_state.paddle.speed < 80 :    
                     game_state.paddle.speed *= 2
             
-###추가부분### s키를 누르면 패들의 이동속도가 느려진다. / d키를 누르면 패들의 이동속도가 2배 빨라진다.
+            ###추가부분### s키를 누르면 패들의 이동속도가 느려진다. / d키를 누르면 패들의 이동속도가 2배 빨라진다.
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             handle_mouse_click(event.pos)
@@ -281,11 +281,17 @@ def render_game():
                 pygame.draw.rect(screen, BLUE, start_menu_button_rect)
                 screen.blit(next_round_button_text, next_round_button_text_rect)
                 screen.blit(start_menu_button_text, start_menu_button_text_rect)
+        ### ESC를 이용해 Pause가 가능하고 정지시에 상태 / 점수를 표시하는 부분 추가 ###
         elif game_state.paused:
+            pause_text = font.render("Paused" , True , RED)
+            screen.blit(pause_text, (screen_width // 2 - pause_text.get_width() // 2, screen_height // 2 - pause_text.get_height() // 2 - 150))
+            score_text = font.render(f"Score: {game_state.score}", True, RED)
+            screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, screen_height // 2 - score_text.get_height() // 2 - 100))
             pygame.draw.rect(screen, BLUE, reset_button_rect)
             pygame.draw.rect(screen, BLUE, resume_button_rect)
             screen.blit(reset_button_text, reset_button_text_rect)
             screen.blit(resume_button_text, resume_button_text_rect)
+        ###
         else:
             pygame.draw.rect(screen, button_color, button_rect)
             screen.blit(button_text, button_text_rect)
