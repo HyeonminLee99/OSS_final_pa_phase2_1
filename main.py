@@ -35,6 +35,16 @@ def handle_events():
                 if event.key == pygame.K_SPACE:
                     game_state.ball.speed_y = 5
                     game_state.ball.speed_x = 0
+###추가부분###
+            if event.key == pygame.K_s and game_state.game_active :
+                if game_state.paddle.speed > 2 :
+                    game_state.paddle.speed /= 2
+            if event.key == pygame.K_d and game_state.game_active :
+                if game_state.paddle.speed < 80 :    
+                    game_state.paddle.speed *= 2
+            
+###추가부분### s키를 누르면 패들의 이동속도가 느려진다. / d키를 누르면 패들의 이동속도가 2배 빨라진다.
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             handle_mouse_click(event.pos)
 
@@ -76,6 +86,9 @@ def reset_game():
     game_state.round_clear = False
     game_state.paused = False
     game_state.lives = 3
+    ###점수 초기화 부분 ###
+    game_state = 0
+    ###
     game_state.ball.x = screen_width // 2
     game_state.ball.y = game_state.paddle.y - game_state.ball.radius
     game_state.ball.speed_x = 0
@@ -152,6 +165,9 @@ def update_game():
         for brick in game_state.bricks[:]:
             if brick.collidepoint(game_state.ball.x, game_state.ball.y):
                 game_state.bricks.remove(brick)
+                ### 점수 추가 부분 ###
+                game_state.score += 100
+                ###
                 if not game_state.ball.piercing:
                     game_state.ball.speed_y = -game_state.ball.speed_y
                 if random.random() < game_state.item_drop_chance:
@@ -230,6 +246,10 @@ def render_game():
             screen.blit(item_images[item['type']], item['rect'])
         time_text = tiny_font.render(f"Time: {seconds}", True, WHITE)
         screen.blit(time_text, (screen_width - 100, 15))
+        ### 점수 표시 추가 부분 ###
+        score_text = tiny_font.render(f"Score: {game_state.score}", True, WHITE)  # 점수 텍스트 추가
+        screen.blit(score_text, (screen_width - 100, 35))  # 화면 왼쪽 상단에 점수 표시
+        ###
     else:
         if game_state.game_over:
             text = font.render("Game Over", True, RED)
